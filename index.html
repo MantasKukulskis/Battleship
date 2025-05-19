@@ -2,25 +2,28 @@
 <html lang="lt">
 <head>
   <meta charset="UTF-8" />
-  <title>Battleship</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Battleship game</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <h1>Battleship</h1>
-  <p id="status">Dėstomas laivas: 4 langelių (1 iš 1)</p>
-  <button id="start-btn" disabled>Start game</button>
+  <h1>Battleship game</h1>
 
   <div class="boards-container">
-    <div>
+    <div class="board-wrapper">
       <h2>Your board</h2>
       <div id="player-board" class="board"></div>
     </div>
-    <div>
+
+    <div class="board-wrapper">
       <h2>Opponent's board</h2>
       <div id="computer-board" class="board"></div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <p id="status">Build the ships and start the game</p>
+  <button id="start-btn" disabled>Start game</button>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

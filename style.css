@@ -1,16 +1,25 @@
 body {
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
   text-align: center;
-  background: #eef;
-  margin: 0;
-  padding: 0;
+  background-color: #f0f8ff;
+  margin: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
 }
 
 .boards-container {
   display: flex;
   justify-content: center;
   gap: 40px;
-  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.board-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .board {
@@ -18,47 +27,78 @@ body {
   grid-template-columns: repeat(10, 30px);
   grid-template-rows: repeat(10, 30px);
   gap: 2px;
-  width: max-content;
-  margin: auto;
+  background-color: #0077b6;
+  padding: 5px;
+  border-radius: 5px;
+  user-select: none;
 }
 
 .cell {
   width: 30px;
   height: 30px;
-  background: #cce;
-  border: 1px solid #99b;
+  background-color: #caf0f8;
+  border: 1px solid #023e8a;
   cursor: pointer;
-  user-select: none;
-}
-
-.cell.ship {
-  background: #444;
-}
-
-.cell.valid {
-  background: #5c5;
-}
-
-.cell.invalid {
-  background: #f88;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 .cell.confirmed {
-  background: #222;
-  pointer-events: none;
+  background-color: #0077b6;
+  cursor: default;
 }
 
 .cell.hit {
-  background: #e22;
-  pointer-events: none;
+  background-color: #ef233c;
+  cursor: default;
 }
 
 .cell.miss {
-  background: #888;
-  pointer-events: none;
+  background-color: #90e0ef;
+  cursor: default;
 }
 
 .cell.sunk {
-  background: #900;
-  pointer-events: none;
+  background-color: #023e8a;
+  cursor: default;
+}
+
+.cell.valid {
+  outline: 2px solid #ffba08;
+}
+
+.cell.invalid {
+  animation: invalid-flash 0.5s ease;
+}
+
+@keyframes invalid-flash {
+  0%, 100% { background-color: #ef233c; }
+  50% { background-color: #caf0f8; }
+}
+
+#status {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  min-height: 24px;
+}
+
+#start-btn {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+#start-btn:disabled {
+  background-color: #90e0ef;
+  cursor: not-allowed;
+}
+
+#start-btn:not(:disabled):hover {
+  background-color: #023e8a;
 }
