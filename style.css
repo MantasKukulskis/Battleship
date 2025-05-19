@@ -1,0 +1,64 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #eef;
+  margin: 0;
+  padding: 0;
+}
+
+.boards-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 30px);
+  grid-template-rows: repeat(10, 30px);
+  gap: 2px;
+  width: max-content;
+  margin: auto;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  background: #cce;
+  border: 1px solid #99b;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cell.ship {
+  background: #444;
+}
+
+.cell.valid {
+  background: #5c5;
+}
+
+.cell.invalid {
+  background: #f88;
+}
+
+.cell.confirmed {
+  background: #222;
+  pointer-events: none;
+}
+
+.cell.hit {
+  background: #e22;
+  pointer-events: none;
+}
+
+.cell.miss {
+  background: #888;
+  pointer-events: none;
+}
+
+.cell.sunk {
+  background: #900;
+  pointer-events: none;
+}
