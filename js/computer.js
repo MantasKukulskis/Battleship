@@ -1,7 +1,21 @@
 import { layout } from "./player.js";
-import {computerCells,playerShips,playerCells,computerShips,computerShots,
-  playerShots,lastHits,} from "./player.js";
-import { generateShipShape, isHit, getShipByCell, isSunk, markSunkShip, checkWin } from "./utils.js";
+import {
+  computerCells,
+  playerShips,
+  playerCells,
+  computerShips,
+  computerShots,
+  playerShots,
+  lastHits,
+} from "./player.js";
+import {
+  generateShipShape,
+  isHit,
+  getShipByCell,
+  isSunk,
+  markSunkShip,
+  checkWin,
+} from "./utils.js";
 
 const statusText = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
@@ -64,6 +78,13 @@ function computerMove() {
       move = Math.floor(Math.random() * 100);
     } while (computerShots.has(move));
   }
+
+  // 👇 Diagnozės log'ai čia
+  console.log("=== Kompiuterio ėjimas ===");
+  console.log("Šauna į langelį:", move);
+  console.log("Visi žaidėjo laivai:", playerShips);
+  console.log("Ar pataikė:", isHit(playerShips, move));
+  console.log("Koks laivas ten:", getShipByCell(playerShips, move));
 
   computerShots.add(move);
 
