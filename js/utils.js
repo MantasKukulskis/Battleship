@@ -51,9 +51,24 @@ export function isSunk(ship, shots) {
 }
 
 export function markSunkShip(ship, cellsArray) {
+  const surroundingSet = new Set();
+
   for (let cell of ship) {
     cellsArray[cell].classList.remove("hit");
     cellsArray[cell].classList.add("sunk");
+
+    const around = getSurrounding(cell);
+    around.forEach(i => {
+      if (!ship.includes(i)) surroundingSet.add(i);
+    });
+  }
+
+  for (let index of surroundingSet) {
+    if (!cellsArray[index].classList.contains("sunk") &&
+        !cellsArray[index].classList.contains("miss") &&
+        !cellsArray[index].classList.contains("hit")) {
+      cellsArray[index].classList.add("empty"); 
+    }
   }
 }
 

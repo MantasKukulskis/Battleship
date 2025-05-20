@@ -1,4 +1,5 @@
-import { layout, layoutIndex, currentShip, currentPlaced, playerShips, playerCells } from "./player.js";
+import {layout, layoutIndex, currentShip, currentPlaced, playerShips,
+  playerCells } from "./player.js";
 import { validateShip } from "./validation.js";
 
 const statusText = document.getElementById("status");
@@ -6,12 +7,12 @@ const startBtn = document.getElementById("start-btn");
 
 export function updateStatus() {
   if (layoutIndex.value >= layout.length) {
-    statusText.textContent = "Visi laivai padėti. Spauskite \"Pradėti žaidimą\".";
+    statusText.textContent = "All ships placed. Click 'Start Game'.";
     startBtn.disabled = false;
     return;
   }
   const { size, count } = layout[layoutIndex.value];
-  statusText.textContent = `Dėstomas laivas: ${size} langelių (${currentPlaced.value + 1} iš ${count})`;
+  statusText.textContent = `Placing ship: ${size} cells (${currentPlaced.value + 1} of ${count})`;
 }
 
 export function handlePlayerBoardClick(index) {

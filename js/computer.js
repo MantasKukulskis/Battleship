@@ -1,16 +1,10 @@
 import { layout } from "./player.js";
-import {
-  computerCells,
-  playerShips,
-  playerCells,
-  computerShips,
-  computerShots,
-  playerShots,
-  lastHits,
-} from "./player.js";
-import { generateShipShape, canPlace, isHit, getShipByCell, isSunk, markSunkShip, checkWin } from "./utils.js";
+import {computerCells,playerShips,playerCells,computerShips,computerShots,
+  playerShots,lastHits,} from "./player.js";
+import { generateShipShape, isHit, getShipByCell, isSunk, markSunkShip, checkWin } from "./utils.js";
 
 const statusText = document.getElementById("status");
+const restartBtn = document.getElementById("restart-btn");
 
 export function placeComputerShips() {
   computerShips.length = 0;
@@ -47,8 +41,9 @@ export function handleComputerBoardClick(index) {
       statusText.textContent = "Pataikei! Šauk dar kartą.";
     }
     if (checkWin(computerShips, playerShots)) {
-      statusText.textContent = "Laimėjai!";
+      statusText.textContent = "Laimėjai! Visus priešininko laivus nuskandinai!";
       window.gameStarted = false;
+      restartBtn.style.display = "inline-block";
     }
   } else {
     computerCells[index].classList.add("miss");
@@ -84,8 +79,9 @@ function computerMove() {
       statusText.textContent = "Kompiuteris pataikė!";
     }
     if (checkWin(playerShips, computerShots)) {
-      statusText.textContent = "Pralaimėjai!";
+      statusText.textContent = "Pralaimėjai! Kompiuteris laimėjo.";
       window.gameStarted = false;
+      restartBtn.style.display = "inline-block";
       return;
     }
     setTimeout(computerMove, 1000);

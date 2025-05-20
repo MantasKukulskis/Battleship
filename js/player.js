@@ -14,14 +14,22 @@ export const layout = [
 export const layoutIndex = { value: 0 };
 export const currentPlaced = { value: 0 };
 
-export let playerShots = new Set();
-export let computerShots = new Set();
-export let lastHits = [];
+export const playerShots = new Set();
+export const computerShots = new Set();
+export const lastHits = [];
 
 export function resetGameState() {
   window.gameStarted = true;
   window.playerTurn = true;
-  playerShots = new Set();
-  computerShots = new Set();
-  lastHits = [];
+
+  playerShots.clear();
+  computerShots.clear();
+  lastHits.length = 0;
+
+  playerShips.length = 0;
+  computerShips.length = 0;
+  currentShip.length = 0;
+
+  layoutIndex.value = 0;
+  currentPlaced.value = 0;
 }
