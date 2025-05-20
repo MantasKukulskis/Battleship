@@ -1,24 +1,13 @@
 import { layout } from "./player.js";
-import {
-  computerCells,
-  playerShips,
-  playerCells,
-  computerShips,
-  computerShots,
-  playerShots,
-  lastHits,
-} from "./player.js";
-import {
-  generateShipShape,
-  isHit,
-  getShipByCell,
-  isSunk,
-  markSunkShip,
-  checkWin,
-} from "./utils.js";
+import { computerCells, playerShips, playerCells, computerShips, computerShots,
+  playerShots, lastHits,} from "./player.js";
+import { generateShipShape, isHit, getShipByCell, isSunk, markSunkShip, checkWin,} from "./utils.js";
 
 const statusText = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
+
+let targetQueue = []; 
+let currentTarget = null;
 
 export function placeComputerShips() {
   computerShips.length = 0;
@@ -70,42 +59,34 @@ export function handleComputerBoardClick(index) {
 function computerMove() {
   if (!window.gameStarted) return;
 
-  let move;
-  if (lastHits.length > 0) {
-    move = findTargetAroundHits();
-  } else {
-    do {
-      move = Math.floor(Math.random() * 100);
-    } while (computerShots.has(move));
-  }
-
-  // 👇 Diagnozės log'ai čia
-  console.log("=== Kompiuterio ėjimas ===");
-  console.log("Šauna į langelį:", move);
-  console.log("Visi žaidėjo laivai:", playerShips);
-  console.log("Ar pataikė:", isHit(playerShips, move));
-  console.log("Koks laivas ten:", getShipByCell(playerShips, move));
-
+  let move = selectTarget();
   computerShots.add(move);
 
   if (isHit(playerShips, move)) {
     playerCells[move].classList.add("hit");
     lastHits.push(move);
+    currentTarget = move;
+
+        updateTargetQueue();
+
     const sunkShip = getShipByCell(playerShips, move);
     if (isSunk(sunkShip, computerShots)) {
       markSunkShip(sunkShip, playerCells);
       statusText.textContent = "Kompiuteris nuskandino tavo laivą! Šauna dar kartą.";
       lastHits.splice(0, lastHits.length, ...lastHits.filter(i => !sunkShip.includes(i)));
+      targetQueue = [];
+      direction = null;
     } else {
       statusText.textContent = "Kompiuteris pataikė!";
     }
+
     if (checkWin(playerShips, computerShots)) {
       statusText.textContent = "Pralaimėjai! Kompiuteris laimėjo.";
       window.gameStarted = false;
       restartBtn.style.display = "inline-block";
       return;
     }
-    setTimeout(computerMove, 1000);
+    setTimeout(computerMove, 800);
   } else {
     playerCells[move].classList.add("miss");
     statusText.textContent = "Tavo ėjimas.";
@@ -113,23 +94,45 @@ function computerMove() {
   }
 }
 
-function findTargetAroundHits() {
-  const directions = [-1, 1, -10, 10];
-  for (let hit of lastHits) {
-    for (let dir of directions) {
-      const target = hit + dir;
-      if (target >= 0 && target < 100 && !computerShots.has(target)) {
-        const x1 = hit % 10;
-        const x2 = target % 10;
-        if (Math.abs(x1 - x2) <= 1) {
-          return target;
-        }
-      }
+function selectTarget() {
+  if (targetQueue.length > 0) {
+    return targetQueue.shift();
+  } else {
+    
+    let move;
+    do {
+      move = Math.floor(Math.random() * 100);
+    } while (
+      computerShots.has(move) ||
+      (move % 2 !== Math.floor(move / 10) % 2) 
+    );
+    return move;
+  }
+}
+
+function updateTargetQueue() {
+  const directions = [
+    { dx: 0, dy: -1 }, 
+    { dx: 0, dy: 1 },  
+    { dx: -1, dy: 0 }, 
+    { dx: 1, dy: 0 }, 
+  ];
+
+  const row = Math.floor(currentTarget / 10);
+  const col = currentTarget % 10;
+
+  for (let { dx, dy } of directions) {
+    const newRow = row + dy;
+    const newCol = col + dx;
+    const index = newRow * 10 + newCol;
+    if (
+      newRow >= 0 && newRow < 10 &&
+      newCol >= 0 && newCol < 10 &&
+      !computerShots.has(index)
+    ) {
+      targetQueue.push(index);
     }
   }
-  let random;
-  do {
-    random = Math.floor(Math.random() * 100);
-  } while (computerShots.has(random));
-  return random;
+
+  targetQueue.sort((a, b) => Math.abs(45 - a) - Math.abs(45 - b));
 }
