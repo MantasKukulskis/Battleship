@@ -1,14 +1,3 @@
-export function getAdjacent(index) {
-  const x = index % 10;
-  const y = Math.floor(index / 10);
-  const adjacent = [];
-  if (x > 0) adjacent.push(index - 1);
-  if (x < 9) adjacent.push(index + 1);
-  if (y > 0) adjacent.push(index - 10);
-  if (y < 9) adjacent.push(index + 10);
-  return adjacent;
-}
-
 export function getSurrounding(index) {
   const x = index % 10;
   const y = Math.floor(index / 10);
@@ -24,4 +13,50 @@ export function getSurrounding(index) {
     }
   }
   return surrounding;
+}
+
+export function generateShipShape(start, size, occupied) {
+  const x = start % 10;
+  const y = Math.floor(start / 10);
+  if (x + size <= 10) {
+    const horizontal = Array.from({ length: size }, (_, i) => start + i);
+    if (canPlace(horizontal, occupied)) return horizontal;
+  }
+  if (y + size <= 10) {
+    const vertical = Array.from({ length: size }, (_, i) => start + i * 10);
+    if (canPlace(vertical, occupied)) return vertical;
+  }
+  return null;
+}
+
+export function canPlace(shipCells, occupied) {
+  for (let cell of shipCells) {
+    if (occupied.includes(cell)) return false;
+    const surrounding = getSurrounding(cell);
+    if (surrounding.some(s => occupied.includes(s))) return false;
+  }
+  return true;
+}
+
+export function isHit(ships, index) {
+  return ships.some(ship => ship.includes(index));
+}
+
+export function getShipByCell(ships, cell) {
+  return ships.find(ship => ship.includes(cell));
+}
+
+export function isSunk(ship, shots) {
+  return ship.every(cell => shots.has(cell));
+}
+
+export function markSunkShip(ship, cellsArray) {
+  for (let cell of ship) {
+    cellsArray[cell].classList.remove("hit");
+    cellsArray[cell].classList.add("sunk");
+  }
+}
+
+export function checkWin(ships, shots) {
+  return ships.every(ship => isSunk(ship, shots));
 }

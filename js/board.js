@@ -8,8 +8,3 @@ export function createBoard(boardElem, cellsArray, clickHandler) {
     cellsArray.push(cell);
   }
 }
-
-export function updateStatusText(text) {
-  const statusText = document.getElementById("status");
-  statusText.textContent = text;
-}
