@@ -1,8 +1,18 @@
 import { createBoard } from "./board.js";
 import { handlePlayerBoardClick, updateStatus } from "./placement.js";
 import { handleComputerBoardClick, placeComputerShips } from "./computer.js";
-import { playerCells, computerCells, layout, layoutIndex, currentPlaced,
-  playerShots, computerShots, lastHits, playerShips, computerShips, currentShip,
+import {
+  playerCells,
+  computerCells,
+  layout,
+  layoutIndex,
+  currentPlaced,
+  playerShots,
+  computerShots,
+  lastHits,
+  playerShips,
+  computerShips,
+  currentShip,
 } from "./player.js";
 
 const playerBoard = document.getElementById("player-board");

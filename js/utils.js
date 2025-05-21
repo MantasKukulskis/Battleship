@@ -18,6 +18,7 @@ export function getSurrounding(index) {
 export function generateShipShape(start, size, occupied) {
   const x = start % 10;
   const y = Math.floor(start / 10);
+
   if (x + size <= 10) {
     const horizontal = Array.from({ length: size }, (_, i) => start + i);
     if (canPlace(horizontal, occupied)) return horizontal;
@@ -53,9 +54,22 @@ export function isSunk(ship, shots) {
 export function markSunkShip(ship, cellsArray) {
   const surroundingSet = new Set();
 
-  for (let cell of ship) {
-    cellsArray[cell].classList.remove("hit");
-    cellsArray[cell].classList.add("sunk");
+  for (let i = 0; i < ship.length; i++) {
+    const cell = ship[i];
+    const el = cellsArray[cell];
+
+    el.classList.remove("hit");
+    el.classList.add("sunk");
+
+    // Pašalinti visas ship-part-N klases
+    for (let n = 1; n <= 5; n++) {
+      el.classList.remove(`ship-part-${n}`);
+    }
+
+    // Pridėti burning efektą, jei reikia
+    if (!el.classList.contains("burning")) {
+      el.classList.add("burning");
+    }
 
     const around = getSurrounding(cell);
     around.forEach(i => {
@@ -64,10 +78,13 @@ export function markSunkShip(ship, cellsArray) {
   }
 
   for (let index of surroundingSet) {
-    if (!cellsArray[index].classList.contains("sunk") &&
-        !cellsArray[index].classList.contains("miss") &&
-        !cellsArray[index].classList.contains("hit")) {
-      cellsArray[index].classList.add("empty"); 
+    const el = cellsArray[index];
+    if (
+      !el.classList.contains("sunk") &&
+      !el.classList.contains("miss") &&
+      !el.classList.contains("hit")
+    ) {
+      el.classList.add("empty");
     }
   }
 }

@@ -1,12 +1,26 @@
 import { layout } from "./player.js";
-import { computerCells, playerShips, playerCells, computerShips, computerShots,
-  playerShots, lastHits,} from "./player.js";
-import { generateShipShape, isHit, getShipByCell, isSunk, markSunkShip, checkWin,} from "./utils.js";
+import {
+  computerCells,
+  playerShips,
+  playerCells,
+  computerShips,
+  computerShots,
+  playerShots,
+  lastHits,
+} from "./player.js";
+import {
+  generateShipShape,
+  isHit,
+  getShipByCell,
+  isSunk,
+  markSunkShip,
+  checkWin,
+} from "./utils.js";
 
 const statusText = document.getElementById("status");
 const restartBtn = document.getElementById("restart-btn");
 
-let targetQueue = []; 
+let targetQueue = [];
 let currentTarget = null;
 
 export function placeComputerShips() {
@@ -35,14 +49,20 @@ export function handleComputerBoardClick(index) {
   playerShots.add(index);
 
   if (isHit(computerShips, index)) {
-    computerCells[index].classList.add("hit");
-    const sunkShip = getShipByCell(computerShips, index);
-    if (isSunk(sunkShip, playerShots)) {
-      markSunkShip(sunkShip, computerCells);
+    const ship = getShipByCell(computerShips, index);
+    const partIndex = ship.indexOf(index);
+    computerCells[index].classList.add("hit", `ship-part-${partIndex + 1}`);
+
+    if (isSunk(ship, playerShots)) {
+      markSunkShip(ship, computerCells);
+      for (let i = 0; i < ship.length; i++) {
+        computerCells[ship[i]].classList.add("burning");
+      }
       statusText.textContent = "Nuskandinai priešininko laivą! Šauk dar kartą.";
     } else {
       statusText.textContent = "Pataikei! Šauk dar kartą.";
     }
+
     if (checkWin(computerShips, playerShots)) {
       statusText.textContent = "Laimėjai! Visus priešininko laivus nuskandinai!";
       window.gameStarted = false;
@@ -63,19 +83,22 @@ function computerMove() {
   computerShots.add(move);
 
   if (isHit(playerShips, move)) {
-    playerCells[move].classList.add("hit");
+    const ship = getShipByCell(playerShips, move);
+    const partIndex = ship.indexOf(move);
+    playerCells[move].classList.add("hit", `ship-part-${partIndex + 1}`);
+
     lastHits.push(move);
     currentTarget = move;
+    updateTargetQueue();
 
-        updateTargetQueue();
-
-    const sunkShip = getShipByCell(playerShips, move);
-    if (isSunk(sunkShip, computerShots)) {
-      markSunkShip(sunkShip, playerCells);
+    if (isSunk(ship, computerShots)) {
+      markSunkShip(ship, playerCells);
+      for (let i = 0; i < ship.length; i++) {
+        playerCells[ship[i]].classList.add("burning");
+      }
       statusText.textContent = "Kompiuteris nuskandino tavo laivą! Šauna dar kartą.";
-      lastHits.splice(0, lastHits.length, ...lastHits.filter(i => !sunkShip.includes(i)));
+      lastHits.splice(0, lastHits.length, ...lastHits.filter(i => !ship.includes(i)));
       targetQueue = [];
-      direction = null;
     } else {
       statusText.textContent = "Kompiuteris pataikė!";
     }
@@ -98,13 +121,12 @@ function selectTarget() {
   if (targetQueue.length > 0) {
     return targetQueue.shift();
   } else {
-    
     let move;
     do {
       move = Math.floor(Math.random() * 100);
     } while (
       computerShots.has(move) ||
-      (move % 2 !== Math.floor(move / 10) % 2) 
+      (move % 2 !== Math.floor(move / 10) % 2)
     );
     return move;
   }
@@ -112,10 +134,10 @@ function selectTarget() {
 
 function updateTargetQueue() {
   const directions = [
-    { dx: 0, dy: -1 }, 
-    { dx: 0, dy: 1 },  
-    { dx: -1, dy: 0 }, 
-    { dx: 1, dy: 0 }, 
+    { dx: 0, dy: -1 },
+    { dx: 0, dy: 1 },
+    { dx: -1, dy: 0 },
+    { dx: 1, dy: 0 },
   ];
 
   const row = Math.floor(currentTarget / 10);
@@ -126,8 +148,10 @@ function updateTargetQueue() {
     const newCol = col + dx;
     const index = newRow * 10 + newCol;
     if (
-      newRow >= 0 && newRow < 10 &&
-      newCol >= 0 && newCol < 10 &&
+      newRow >= 0 &&
+      newRow < 10 &&
+      newCol >= 0 &&
+      newCol < 10 &&
       !computerShots.has(index)
     ) {
       targetQueue.push(index);
